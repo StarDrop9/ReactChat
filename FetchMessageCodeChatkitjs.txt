@@ -1,0 +1,41 @@
+line 3495 in chatkit.js
+
+ key: "fetchMessages",
+      value: function () {
+        var e = this,
+            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+            n = t.roomId,
+            r = t.initialId,
+            o = t.limit,
+            s = t.direction,
+            i = t.serverInstance;
+        return je("roomId", "string", n), r && je("initialId", "number", r), o && je("limit", "number", o), s && function (e, t, n) {
+          if (!le(n, t)) throw new TypeError("expected " + e + " to be one of " + t + " but was " + n);
+        }("direction", ["older", "newer"], s), (i || this.serverInstanceV2).request({
+          method: "GET",
+          path: "/rooms/" + encodeURIComponent(n) + "/messages?" + De({
+            initial_id: r,
+            limit: o,
+            direction: s
+          })
+        }).then(function (t) {
+          var n = JSON.parse(t).map(function (t) {
+            return e.decorateMessage(Fe(t));
+          });
+          return e.userStore.fetchMissingUsers(we(L(q("senderId"), n))).then(function () {
+            return Ee(function (e, t) {
+              return e.id - t.id;
+            }, n);
+          });
+        }).catch(function (t) {
+          throw e.logger.warn("error fetching messages from room " + n + ":", t), t;
+        });
+      }
+    }, {
+      key: "fetchMultipartMessages",
+      value: function () {
+        var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {};
+        return this.fetchMessages(Ce({}, e, {
+          serverInstance: this.serverInstanceV6
+        }));
+      }

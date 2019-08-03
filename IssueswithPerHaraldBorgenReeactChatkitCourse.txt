@@ -1,0 +1,5 @@
+Issues with Per Harald Borgen Scrimba React and ChatKit App
+Course.
+
+1. Need to upgrade chatkit to chatkit-client SDK.
+2. hooks onNewMessage : is now onMessage:
